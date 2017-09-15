@@ -1,0 +1,58 @@
+<script src="../tinytest.js"></script>
+<script> 
+ 
+var canine = {
+  bark: function() {
+    console.log('bark');
+  }
+};
+
+var dog = Object.create(canine);
+dog.fetch = function() {
+  console.log('fetch');
+};
+
+var myDog = Object.create(dog);
+var empty = Object.create(null);
+
+
+function isPrototypeOf(obj1, obj2) {
+    "use strict";
+    var protoObj = Object.getPrototypeOf(obj2);
+
+    if (protoObj === null) {
+        return false;
+    }
+    while (protoObj !== null) {
+        if (obj1 === protoObj) {
+            return true;
+        }
+        protoObj = Object.getPrototypeOf(protoObj);
+    }
+    return false;
+}
+
+tests({
+    "It should return true if passed an Object and its prototype Object.": function () {
+       eq(isPrototypeOf(dog, myDog), true);
+       eq(isPrototypeOf(dog, myDog), dog.isPrototypeOf(myDog));
+    },
+    "It should return false if passed a null Object (as 2nd argument).": function () {
+       eq(isPrototypeOf(dog, empty), false);
+       eq(isPrototypeOf(dog, empty), dog.isPrototypeOf(empty));
+     },
+    "It should return true if passed the Object and an Object.prototype.": function () {
+       eq(isPrototypeOf(Object.prototype, myDog),  true);
+       eq(isPrototypeOf(Object.prototype, myDog),  Object.prototype.isPrototypeOf(myDog));
+    },
+    "It should return true if passed an Object & the prototype Object of its prototype Object.": function () {
+       eq(isPrototypeOf(canine, myDog), true);
+       eq(isPrototypeOf(canine, myDog), canine.isPrototypeOf(myDog));
+    },
+    "It should return false if the prototype Object is not the prototype Object of the Object.": function () {
+       eq(isPrototypeOf(myDog, dog), false);
+       eq(isPrototypeOf(myDog, dog), myDog.isPrototypeOf(dog));
+    }
+});
+
+</script>
